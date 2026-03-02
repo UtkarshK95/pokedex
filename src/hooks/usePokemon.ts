@@ -1,30 +1,40 @@
-import { useEffect, useState } from "react";
-import { fetchPokemons } from "@/lib/api";
+import { useEffect, useMemo, useState } from "react";
+import { fetchPokemonList, fetchPokemonByUrl } from "@/lib/api";
+import type { PokemonListItem } from "@/types/pokemon";
 
-export const usePokemon = () => {
-  const [pokemonList, setPokemonList] = useState([]);
-  const [filteredPokemons, setFilteredPokemons] = useState([]);
+export function usePokemon() {
+  const [allPokemon, setAllPokemon] = useState<PokemonListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("");
 
   useEffect(() => {
-    const getPokemons = async () => {
-      const data = await fetchPokemons();
-      setPokemonList(data.results);
-      setFilteredPokemons(data.results);
-    };
-    getPokemons();
+    async function load() {
+      try {
+        const list = await fetchPokemonList();
+        // Fetch all 151 detail records in parallel
+        const details = await Promise.all(list.map((p) => fetchPokemonByUrl(p.url)));
+        const enriched: PokemonListItem[] = details.map((p) => ({
+          id: p.id,
+          name: p.name,
+          sprite: p.sprites.front_default,
+          types: p.types.map((t) => t.type.name),
+        }));
+        setAllPokemon(enriched);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    load();
   }, []);
 
-  const filterPokemon = (type: string, searchTerm: string) => {
-    let filtered = pokemonList;
+  const filteredPokemon = useMemo(() => {
+    return allPokemon.filter((p) => {
+      const matchesName = p.name.includes(searchTerm.toLowerCase());
+      const matchesType = selectedType === "" || p.types.includes(selectedType);
+      return matchesName && matchesType;
+    });
+  }, [allPokemon, searchTerm, selectedType]);
 
-    if (searchTerm) {
-      filtered = filtered.filter((pokemon: any) =>
-        pokemon.name.includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredPokemons(filtered);
-  };
-
-  return { filteredPokemons, filterPokemon };
-};
+  return { filteredPokemon, isLoading, setSearchTerm, setSelectedType };
+}

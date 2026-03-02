@@ -1,78 +1,99 @@
 # Pokédex
 
-Pokédex is a responsive Pokémon search app built using Next.js, Tailwind CSS, and the PokéAPI. It lets users easily search Pokémon by type or name, view Pokémon details, and navigate smoothly through intuitive breadcrumbs.
+A responsive Pokémon browser built with Next.js 15 and the PokéAPI. Browse all 151 original Pokémon, filter by type, search by name, and view individual detail pages.
 
-## 🚀 Features
+## Overview
 
-- **Pokémon Search**: Search Pokémon by name.
-- **Type Filtering**: Filter Pokémon by type.
-- **Pokémon Cards**: Display results as interactive Pokémon cards.
-- **Dynamic Routes**: Individual detailed pages for each Pokémon.
-- **Breadcrumb Navigation**: Clear navigation showing current path.
-- **Responsive Design**: Mobile-friendly UI.
-- **Server-side Rendering**: Optimized performance with Next.js.
+This project uses the Next.js App Router with a hybrid rendering model: the home page is a client component that fetches and filters data in the browser, while each Pokémon detail page is a server component rendered on demand. All PokéAPI responses are cached for 24 hours via the Next.js fetch cache.
 
-## 🛠️ Tech Stack
+## Features
 
-- Next.js (App Router)
-- Tailwind CSS
-- PokéAPI
-- TypeScript (optional, but recommended)
+- Real-time search by Pokémon name
+- Filter by type via dropdown (all 18 types)
+- Pokémon cards with sprite, ID, name, and type badges
+- Detail page with height, weight, and type information
+- Loading spinner and empty state for the list view
+- Accessible form controls with labels and focus styles
+- Proper 404 handling for unknown Pokémon routes
+- Responsive grid layout (2 to 5 columns)
 
-## 📂 Project Structure
+## Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| Framework | Next.js 15.5.12 (App Router) |
+| UI library | React 19 |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS 4 |
+| Data source | PokéAPI v2 |
+| Font | Geist (via next/font) |
+| Package manager | npm |
+
+## Project Structure
+
 ```
-pokedex-app/
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── pokemon/
-│       └── [name]/page.tsx
-├── components/
-│   ├── PokemonCard.tsx
-│   ├── SearchForm.tsx
-│   └── Breadcrumb.tsx
-├── hooks/
-│   └── usePokemon.ts
-├── lib/
-│   └── api.ts
-└── styles/
-    └── globals.css
+src/
+  app/
+    layout.tsx              Root layout — metadata, font, global styles
+    page.tsx                Home page — search, filter, Pokémon grid
+    pokemon/[name]/
+      page.tsx              Detail page — server component
+  components/
+    Breadcrumb.tsx          Navigation breadcrumb
+    PokemonCard.tsx         Card with sprite, ID, name, type badges
+    SearchForm.tsx          Name search input and type dropdown
+  hooks/
+    usePokemon.ts           Fetches and filters all 151 Pokémon client-side
+  lib/
+    api.ts                  PokéAPI fetch functions with error handling and cache hints
+  types/
+    pokemon.ts              Shared TypeScript interfaces
+  styles/
+    globals.css             Tailwind entry point and base resets
 ```
 
-## 🛠️ Tech Stack
-
-- Next.js 14
-- Tailwind CSS
-- React Server & Client Components
-- Custom Hooks
-- Server Actions
-- Dynamic Routing
-
-## ⚙️ Installation & Setup
-
-Clone and install dependencies:
+## Installation
 
 ```bash
-git clone <your_repo_url>
-cd pokedex-app
+git clone https://github.com/UtkarshK95/pokedex.git
+cd pokedex
 npm install
+```
+
+## Running Locally
+
+```bash
 npm run dev
 ```
 
-Visit the app at `http://localhost:3000`
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🎨 UI and Design
+## Available Scripts
 
-The app UI is responsive and optimized for mobile views using Tailwind CSS.
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Start the production server |
+| `npm run lint` | Run ESLint |
 
-## 📌 API Reference
+## Architecture Notes
 
-- [PokéAPI Documentation](https://pokeapi.co/docs/v2)
+- The home page fetches the list of 151 Pokémon and then resolves all 151 detail records in parallel via `Promise.all`. This trades initial load time for zero per-card waterfalls and enables full client-side filtering without additional requests.
+- PokéAPI fetch calls in `lib/api.ts` use `next: { revalidate: 86400 }` so repeated builds and deployments do not re-fetch static data unnecessarily.
+- The detail page uses `notFound()` from `next/navigation` to return a proper 404 for invalid Pokémon names rather than crashing with a 500.
 
-## 🧑‍💻 Author
+## Contributing
 
-- **Utkarsh Katiyar**
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Commit your changes and open a pull request
 
-## 📄 License
+## Support
 
-Licensed under the MIT License.
+- GitHub: [https://github.com/UtkarshK95](https://github.com/UtkarshK95)
+- Buy Me a Coffee: [https://buymeacoffee.com/utkarshk95](https://buymeacoffee.com/utkarshk95)
+
+## License
+
+MIT © Utkarsh
