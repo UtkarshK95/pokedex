@@ -2,9 +2,13 @@
 
 A responsive Pokémon browser built with Next.js 15 and the PokéAPI. Browse all 151 original Pokémon, filter by type, search by name, and view individual detail pages.
 
+---
+
 ## Overview
 
 This project uses the Next.js App Router with a hybrid rendering model: the home page is a client component that fetches and filters data in the browser, while each Pokémon detail page is a server component rendered on demand. All PokéAPI responses are cached for 24 hours via the Next.js fetch cache.
+
+---
 
 ## Features
 
@@ -17,6 +21,8 @@ This project uses the Next.js App Router with a hybrid rendering model: the home
 - Proper 404 handling for unknown Pokémon routes
 - Responsive grid layout (2 to 5 columns)
 
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -28,6 +34,8 @@ This project uses the Next.js App Router with a hybrid rendering model: the home
 | Data source | PokéAPI v2 |
 | Font | Geist (via next/font) |
 | Package manager | npm |
+
+---
 
 ## Project Structure
 
@@ -52,6 +60,8 @@ src/
     globals.css             Tailwind entry point and base resets
 ```
 
+---
+
 ## Installation
 
 ```bash
@@ -60,6 +70,8 @@ cd pokedex
 npm install
 ```
 
+---
+
 ## Running Locally
 
 ```bash
@@ -67,6 +79,8 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
 
 ## Available Scripts
 
@@ -77,11 +91,21 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm run start` | Start the production server |
 | `npm run lint` | Run ESLint |
 
+---
+
 ## Architecture Notes
 
 - The home page fetches the list of 151 Pokémon and then resolves all 151 detail records in parallel via `Promise.all`. This trades initial load time for zero per-card waterfalls and enables full client-side filtering without additional requests.
 - PokéAPI fetch calls in `lib/api.ts` use `next: { revalidate: 86400 }` so repeated builds and deployments do not re-fetch static data unnecessarily.
 - The detail page uses `notFound()` from `next/navigation` to return a proper 404 for invalid Pokémon names rather than crashing with a 500.
+
+---
+
+## Demo
+
+Live site: _https://pokedex.vercel.app/_
+
+---
 
 ## Contributing
 
@@ -89,11 +113,15 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 2. Create a feature branch: `git checkout -b feat/your-feature`
 3. Commit your changes and open a pull request
 
+---
+
 ## Support
 
 - GitHub: [https://github.com/UtkarshK95](https://github.com/UtkarshK95)
 - Buy Me a Coffee: [https://buymeacoffee.com/utkarshk95](https://buymeacoffee.com/utkarshk95)
 
+---
+
 ## License
 
-MIT © Utkarsh
+MIT © Utkarsh Katiyar — see [LICENSE](LICENSE) for full terms.
