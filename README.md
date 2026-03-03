@@ -103,7 +103,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Demo
 
-Live site: _https://pokedex.vercel.app/_
+Live site: https://pokedex-uk.vercel.app/
 
 ---
 
